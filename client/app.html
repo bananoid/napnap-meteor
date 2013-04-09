@@ -1,0 +1,69 @@
+<head>
+  <title>NapNap</title>
+</head>
+
+<body>
+  {{> mainNav}}
+  <div id="mainContainer" class="container-fluid">
+    {{renderPage}}
+  </div>
+
+</body>
+
+<template name="mainNav">
+  <div id="mainNav" class="navbar navbar-fixed-top">
+    <ul class="nav nav-pills">
+      {{#each items}}
+        {{> mainNavItem}}
+      {{/each}}
+    </ul>
+  </div>
+</template>
+
+<template name="mainNavItem">
+  <li class="{{selected}}">
+    <a href="{{_id}}">{{label}}</a>
+  </li>
+</template>
+
+<template name="not_found">
+  404
+</template>
+
+<template name="alarms">
+  <div class="row-fluid">
+    {{#each items}}
+      <p>Alarm
+        <strong>loadTime :: </strong>{{loadTime}}
+        <strong>playTime :: </strong>{{playTime}}
+        <strong>offTime :: </strong>{{offTime}}
+        <strong>offForce :: </strong>{{offForce}}
+      </p>
+    {{/each}}
+  </div>
+</template>
+
+<template name="testA">
+  <div class="row-fluid">
+    <div class="span10">
+    </div>
+  </div>
+</template>
+
+<template name="testB">
+  <div class="row-fluid">
+
+    <div class="btn-group">
+      <button class="btn">Left</button>
+      <button class="btn">Middle</button>
+      <button class="btn">Right</button>
+    </div>
+
+    <svg></svg>
+
+  </div>
+</template>
+
+<template name="testC">
+  <svg></svg>
+</template>
