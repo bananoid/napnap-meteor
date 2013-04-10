@@ -30,16 +30,38 @@
   404
 </template>
 
+<template name="setAlarm">
+  <div class="row-fluid">
+    <label>Time:</label>
+    <input id="timeValue" value="{{now}}"></input>
+    <button class="timeSet">SET</button>
+    {{> nextAlarm}}
+    {{> alarms}}
+  </div>
+</template>
+
 <template name="alarms">
   <div class="row-fluid">
     {{#each items}}
       <p>Alarm
-        <strong>loadTime :: </strong>{{loadTime}}
-        <strong>playTime :: </strong>{{playTime}}
+        <strong>loadTime :: </strong>{{humanLoadTime}}
+        <strong>playTime :: </strong>{{humanPlayTime}}
         <strong>offTime :: </strong>{{offTime}}
         <strong>offForce :: </strong>{{offForce}}
       </p>
     {{/each}}
+  </div>
+</template>
+
+<template name="nextAlarm">
+  <div class="row-fluid">
+    {{#if nextAlarm}}
+      {{#with nextAlarm}}
+        <div><strong>id</strong> :: {{_id}}</div>
+        <div><strong>playTyme</strong> :: {{playTime}}</div>
+        <div><strong>humanPlayTime</strong> :: {{humanTime}}</div>
+      {{/with}}
+    {{/if}}
   </div>
 </template>
 

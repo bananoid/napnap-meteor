@@ -1,5 +1,7 @@
 Meteor.Router.add
   '/':'alarms'
+  '/setAlarm':'setAlarm'
+  '/nextAlarm':'nextAlarm'
   '/alarms':'alarms'
   '/testA': 'testA'
   '/testB': 'testB'
@@ -8,8 +10,63 @@ Meteor.Router.add
 
 # Template.home.rendered = ()->
 
+Template.setAlarm.events
+  'click .timeSet':(e)->
+    playTime =  document.getElementById("timeValue").value;
+    playTime = humanToTime(playTime);
+    playTime = parseInt(playTime)
+
+    d = new Date();
+    loadTime = Math.floor(d.getTime()/1000)
+    console.log playTime
+
+    Alarms.insert
+      playTime:playTime
+      loadTime:loadTime
+
+# Template.setAlarm.rendered = ()->
+#   console.log "setAlarm"
+#   console.log "find ", this.find("#timeValue")
+
+Template.setAlarm.now = ->
+  t = Math.floor(new Date().getTime()/1000) + 60
+  return timeToHuman t
+
 Template.alarms.items = ()->
-  return Alarms.find();
+  return Alarms.find({offTime:{$exists:true}},{sort:{loadTime:-1}})
+  # return Alarms.find({},{sort:{loadTime:-1}})
+
+timeToHuman = (time)->
+  # if not obj[key]
+  #   return "-"
+
+  d = new Date(time * 1000)
+  dateStr =
+  d.getFullYear().toString() + "-" +
+  d.getMonth().toString() + "-" +
+  d.getDate().toString() + " " +
+  d.getHours().toString() + ":" +
+  d.getMinutes().toString() + ":" +
+  d.getSeconds().toString();
+  return dateStr
+
+humanToTime = (ht)->
+  date = new Date(ht)
+  return date.getTime()
+
+Template.alarms.humanPlayTime = ()->
+  return timeToHuman this.playTime
+
+Template.alarms.humanLoadTime = ()->
+  return timeToHuman this.loadTime
+
+Template.nextAlarm.nextAlarm = ()->
+  # return Alarms.find().sort({_id:1}).limit(1);
+  alarm = Alarms.getNext()
+  return null if not alarm
+  alarm.humanTime = timeToHuman alarm.playTime/1000
+  return alarm
+
 
 Template.testA.rendered = ()->
   console.log "render", Meteor.Router.page()
@@ -32,6 +89,8 @@ Template.testA.rendered = ()->
   .style( "font-size", (d)-> d + "px")
   .style( "line-height", (d)-> d*0.8 + "px")
   .style( "color", (d,i)-> "hsl(#{i*200+50},30%,50%)")
+
+
 
 Template.testB.rendered = ()->
   console.log "render", Meteor.Router.page()
@@ -78,14 +137,23 @@ Template.testC.rendered = ()->
 Template.mainNavItem.selected = -> if Meteor.Router.page() is this._id then "active" else ''
 
 Template.mainNav.items = [
+
+  {
+    _id:"setAlarm"
+    label:"Set Alarm"
+  }
   {
     _id:"alarms"
     label:"Alarms"
   }
   {
-    _id:"testA"
-    label:"Test A"
+    _id:"nextAlarm"
+    label:"Next Alarm"
   }
+  # {
+  #   _id:"testA"
+  #   label:"Test A"
+  # }
   {
     _id:"testB"
     label:"Test B"
